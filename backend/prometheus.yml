@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s  # By default, scrape targets every 15 seconds.
+
+scrape_configs:
+  - job_name: 'flask_application'
+    static_configs:
+      - targets: ['localhost:5000']
+
+#  This is for docker if I use docker to run this
+# global:
+#   scrape_interval: 15s  # Default scrape interval
+
+# scrape_configs:
+#   - job_name: 'flask_application'
+#     static_configs:
+#       - targets: ['host.docker.internal:5000']
