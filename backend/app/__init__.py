@@ -2,6 +2,8 @@ import os
 import logging
 from logging.handlers import RotatingFileHandler
 from flask import Flask
+from flask_session import Session
+import redis
 from flask_sqlalchemy import SQLAlchemy
 from .blueprints import register_blueprints
 from prometheus_flask_exporter import PrometheusMetrics
@@ -29,12 +31,23 @@ def create_app():
     """Factory pattern to create a Flask app instance"""
     app = Flask(__name__)
 
+    # Database configuration
     DATABASE_URI = os.getenv('DATABASE_URI')
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    # Redis configuration
+    app.config['REDIS_URL'] = "redis://localhost:6379/0"
+    app.config['SESSION_TYPE'] = 'redis'
+    app.config['SESSION_PERMANENT'] = False
+    app.config['SESSION_USE_SIGNER'] = True
+    app.config['SESSION_REDIS'] = redis.from_url(app.config['REDIS_URL'])
+
     # Initialize extensions
     db.init_app(app)
+
+    # Initialize Flask-Session
+    Session(app)
 
     # Call the logging configuration function
     configure_logging(app)

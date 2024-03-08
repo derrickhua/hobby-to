@@ -17,3 +17,20 @@ class LocationSchema(Schema):
     cost = fields.Str()
     popularity = fields.Int()
     website = fields.Str()
+
+class RoadmapSchema(Schema):
+    roadmap_id = fields.Int(dump_only=True)
+    title = fields.Str(required=True)
+    description = fields.Str()
+    hobby_id = fields.Int(required=True)
+    user_id = fields.Int(allow_none=True)
+    created_at = fields.DateTime(dump_only=True)
+
+class RoadmapNodeSchema(Schema):
+    node_id = fields.Int(dump_only=True)
+    roadmap_id = fields.Int(required=True)
+    title = fields.Str(required=True)
+    description = fields.Str()
+    order = fields.Int(required=True)
+    parent_node_id = fields.Int(allow_none=True)
+    estimated_time = fields.Str()
