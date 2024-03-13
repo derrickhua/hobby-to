@@ -8,3 +8,4 @@ def register_blueprints(app):
     app.register_blueprint(user_bp, url_prefix='/api/users')
     app.register_blueprint(location_bp, url_prefix='/api/locations')
     app.register_blueprint(roadmap_bp, url_prefix='/api/roadmaps')
+    

@@ -1,5 +1,5 @@
 from datetime import datetime
-from . import db
+from .database import db
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -12,9 +12,9 @@ class User(db.Model):
 class Hobby(db.Model):
     __tablename__ = 'hobbies'
     hobby_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text)
-    category = db.Column(db.String(255))
+    name = db.Column(db.String(255), nullable=False, unique=True)
+    category = db.Column(db.String(255), nullable=False)
+    sub_category = db.Column(db.String(255), nullable=True)  
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Location(db.Model):
@@ -28,6 +28,15 @@ class Location(db.Model):
     cost = db.Column(db.String(255))
     popularity = db.Column(db.Integer)
     website = db.Column(db.String(255))
+
+class HobbyLocation(db.Model):
+    __tablename__ = 'hobby_location'
+    id = db.Column(db.Integer, primary_key=True)
+    hobby_id = db.Column(db.Integer, db.ForeignKey('hobbies.hobby_id'), nullable=False)
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
+    hobby = db.relationship('Hobby', backref=db.backref('hobby_locations', lazy=True))
+    location = db.relationship('Location', backref=db.backref('hobby_locations', lazy=True))
+
 
 class Roadmap(db.Model):
     __tablename__ = 'roadmaps'

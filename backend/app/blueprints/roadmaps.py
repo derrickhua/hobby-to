@@ -1,19 +1,19 @@
 from flask import Blueprint, request, jsonify, current_app
 from redis import Redis
 from marshmallow import ValidationError
-from app import db  
+from ..database import db
 import json
-from sqlalchemy.exc import SQLAlchemyError  # Import this for handling database errors
+from sqlalchemy.exc import SQLAlchemyError  
 from sqlalchemy import func
-from schemas import RoadmapSchema, RoadmapNodeSchema
-from models import Roadmap, RoadmapNode, Hobby
-
+from ..schemas import RoadmapSchema, RoadmapNodeSchema
+from ..models import Roadmap, RoadmapNode, Hobby
+from ..redis_client import redis_client
 # Define Variables
+roadmap_bp = Blueprint('roadmap_bp', __name__)
 roadmaps_bp = Blueprint('roadmaps_bp', __name__)
 roadmap_schema = RoadmapSchema()
 roadmaps_schema = RoadmapSchema(many=True)
 roadmap_node_schema = RoadmapNodeSchema(many=True)
-redis_client = Redis.from_url(current_app.config['REDIS_URL'])
 
 @roadmaps_bp.route('/api/roadmaps', methods=['POST'])
 def create_roadmap():

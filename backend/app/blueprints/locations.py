@@ -1,14 +1,13 @@
 from flask import Blueprint, jsonify, current_app
 from redis import Redis
 import json
-from app.models import Location
-from app.schemas import LocationSchema
-
+from ..models import Location
+from ..schemas import LocationSchema
+from ..redis_client import redis_client
 # Define Variables
 location_bp = Blueprint('location_bp', __name__)
 location_schema = LocationSchema()
 locations_schema = LocationSchema(many=True)
-redis_client = Redis.from_url(current_app.config['REDIS_URL'])
 
 @location_bp.route('/api/locations', methods=['GET'])
 def get_locations():

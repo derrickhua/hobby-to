@@ -1,64 +1,57 @@
 from flask import Blueprint, request, jsonify, current_app
 from marshmallow import ValidationError
 from redis import Redis
+from ..database import db
+from sqlalchemy import text
 import json
-from app.models import Hobby, Location  
-from app.schemas import HobbySchema, LocationSchema
+from ..models import Hobby, Location, HobbyLocation  # Import HobbyLocation if it's a new model
+from ..schemas import HobbySchema, LocationSchema
+from ..redis_client import redis_client
 
 # Define Variables
 hobby_bp = Blueprint('hobby_bp', __name__)  
 hobby_schema = HobbySchema()
 hobbies_schema = HobbySchema(many=True)  
 location_schema = LocationSchema(many=True)
-redis_client = Redis.from_url(current_app.config['REDIS_URL'])
 
 @hobby_bp.route('/search', methods=['GET'])
 def search_hobbies():
     query = request.args.get('query', '')
-    cost = request.args.getlist('cost')  # Expects cost to be a list of values: ['$', '$$', '$$$']
+    cost = request.args.getlist('cost')
     category = request.args.get('category', None)
-
-    # Generate a unique cache key based on the query, category, and cost
     cache_key = f"search:{query}:{category}:{':'.join(cost)}"
 
     try:
-        # Attempt to fetch cached data
         cached_data = redis_client.get(cache_key)
         if cached_data:
-            # Cache hit, return the cached data
             current_app.logger.info(f"Returning cached results for {cache_key}")
             return jsonify(json.loads(cached_data)), 200
 
-        # Cache miss, proceed to query the database
-        query_obj = Hobby.query
-        if query:
-            query_obj = query_obj.filter(Hobby.name.ilike(f'%{query}%'))
-        if category in ["Arts", "Sports", "Other"]:
-            query_obj = query_obj.filter(Hobby.category == category)
+        # Modify this query to include joins with the HobbyLocation table
+        sql_query = text("""
+            SELECT h.*, l.* FROM hobbies h
+            JOIN hobby_location hl ON h.hobby_id = hl.hobby_id
+            JOIN locations l ON hl.location_id = l.location_id
+            WHERE (:query IS NULL OR h.name ILIKE :query OR h.sub_category ILIKE :query)
+            AND (:category IS NULL OR h.category = :category)
+            AND (ARRAY[:cost]::text[] IS NULL OR l.cost = ANY(ARRAY[:cost]::text[]))
+            ORDER BY GREATEST(similarity(h.name, :query), similarity(h.sub_category, :query)) DESC;
+        """)
 
-        hobbies = query_obj.all()
-        search_results = []
+        result = db.engine.execute(sql_query, query='%'+query+'%', cost=cost, category=category)
+        # search_results = process_search_results(result)
 
-        for hobby in hobbies:
-            locations_query = Location.query.filter_by(hobby_id=hobby.hobby_id)
-            if cost:
-                locations_query = locations_query.filter(Location.cost.in_(cost))
-            locations = locations_query.all()
-
-            if locations:
-                hobby_data = hobby_schema.dump(hobby)
-                hobby_data['locations'] = location_schema.dump(locations)
-                search_results.append(hobby_data)
-
-        # Cache the new search results with an expiration time
-        redis_client.setex(cache_key, 3600, json.dumps(search_results))  # Expires in 1 hour
-
-        current_app.logger.info(f"Cached search results for {cache_key}")
-        return jsonify(search_results), 200
+        # redis_client.setex(cache_key, 3600, json.dumps(search_results))
+        # current_app.logger.info(f"Cached search results for {cache_key}")
+        return jsonify(result), 200
     except Exception as e:
         current_app.logger.error(f'Error during search: {e}')
         return jsonify({"message": "An error occurred while searching for hobbies", "error": str(e)}), 500
 
+def process_search_results(result):
+    # Implement the logic to process and convert SQL results into a structured JSON format.
+    # This placeholder function needs to be replaced with actual logic.
+    return [{"placeholder": "Implement logic to structure SQL results into JSON"}]
 
 @hobby_bp.route('', methods=['GET'])
 def get_hobbies_by_category():

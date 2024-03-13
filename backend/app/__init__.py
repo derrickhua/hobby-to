@@ -7,10 +7,9 @@ import redis
 from flask_sqlalchemy import SQLAlchemy
 from .blueprints import register_blueprints
 from prometheus_flask_exporter import PrometheusMetrics
-
-
-# Initialize SQLAlchemy with no settings
-db = SQLAlchemy()
+from flask_jwt_extended import JWTManager
+from .database import db
+from .redis_client import redis_client
 
 def configure_logging(app):
     # Configure basic logging to stdout
@@ -43,11 +42,19 @@ def create_app():
     app.config['SESSION_USE_SIGNER'] = True
     app.config['SESSION_REDIS'] = redis.from_url(app.config['REDIS_URL'])
 
+    #JWT Configurations
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET')  # Change this to a random secret key
+
+    jwt = JWTManager(app)
+
     # Initialize extensions
     db.init_app(app)
 
     # Initialize Flask-Session
     Session(app)
+
+    # Initialize Redis client with app context
+    redis_client.init_app(app)
 
     # Call the logging configuration function
     configure_logging(app)
