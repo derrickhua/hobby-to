@@ -36,7 +36,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Redis configuration
-    app.config['REDIS_URL'] = "redis://localhost:6379/0"
+    app.config['REDIS_URL'] = os.getenv('REDIS_URL', "redis://localhost:6379/0")
     app.config['SESSION_TYPE'] = 'redis'
     app.config['SESSION_PERMANENT'] = False
     app.config['SESSION_USE_SIGNER'] = True

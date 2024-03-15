@@ -7,7 +7,7 @@ import json
 from ..models import Hobby, Location, HobbyLocation  # Import HobbyLocation if it's a new model
 from ..schemas import HobbySchema, LocationSchema
 from ..redis_client import redis_client
-
+import decimal
 # Define Variables
 hobby_bp = Blueprint('hobby_bp', __name__)  
 hobby_schema = HobbySchema()
@@ -16,44 +16,60 @@ location_schema = LocationSchema(many=True)
 
 @hobby_bp.route('/search', methods=['GET'])
 def search_hobbies():
-    query = request.args.get('query', '')
-    cost = request.args.getlist('cost')
+    query_param = request.args.get('query', '')
+    cost = request.args.getlist('cost')  # This will be a list like ['$','$$','$$$']
     category = request.args.get('category', None)
-    cache_key = f"search:{query}:{category}:{':'.join(cost)}"
+    cache_key = f"search:{query_param}:{category}:{':'.join(cost)}"
 
     try:
         cached_data = redis_client.get(cache_key)
         if cached_data:
             current_app.logger.info(f"Returning cached results for {cache_key}")
-            return jsonify(json.loads(cached_data)), 200
+            return jsonify(json.loads(cached_data.decode('utf-8'))), 200
 
-        # Modify this query to include joins with the HobbyLocation table
-        sql_query = text("""
-            SELECT h.*, l.* FROM hobbies h
+        # Start with the basic part of the query
+        sql_query = """
+            SELECT l.location_id, l.name, l.address, l.latitude, l.longitude, l.cost, l.popularity, l.booking_url FROM hobbies h
             JOIN hobby_location hl ON h.hobby_id = hl.hobby_id
             JOIN locations l ON hl.location_id = l.location_id
-            WHERE (:query IS NULL OR h.name ILIKE :query OR h.sub_category ILIKE :query)
-            AND (:category IS NULL OR h.category = :category)
-            AND (ARRAY[:cost]::text[] IS NULL OR l.cost = ANY(ARRAY[:cost]::text[]))
-            ORDER BY GREATEST(similarity(h.name, :query), similarity(h.sub_category, :query)) DESC;
-        """)
+            WHERE (h.name ILIKE :query_param OR h.sub_category ILIKE :query_param OR :query_param IS NULL)
+            AND (h.category = :category OR :category IS NULL)
+        """
 
-        result = db.engine.execute(sql_query, query='%'+query+'%', cost=cost, category=category)
-        # search_results = process_search_results(result)
+        # Dynamically build the cost condition if there are cost filters
+        if cost:
+            cost_conditions = " OR ".join([f"l.cost = '{c}'" for c in cost])
+            sql_query += f" AND ({cost_conditions})"
 
-        # redis_client.setex(cache_key, 3600, json.dumps(search_results))
-        # current_app.logger.info(f"Cached search results for {cache_key}")
-        return jsonify(result), 200
+        sql_query += " ORDER BY GREATEST(similarity(h.name, :query_param), similarity(h.sub_category, :query_param)) DESC;"
+
+        params = {'query_param': f'%{query_param}%', 'category': category}
+
+        # Execute the query
+        with db.engine.connect() as connection:
+            result = connection.execute(text(sql_query), params)
+
+            # Define the column names
+            column_names = ['location_id', 'name', 'address', 'latitude', 'longitude', 'cost', 'popularity', 'booking_url']
+
+            # Convert the row into a dictionary
+            search_results = [dict(zip(column_names, row)) for row in result]
+
+            # Convert datetime objects into strings and Decimal objects into floats
+            for result in search_results:
+                for key, value in result.items():
+                    if isinstance(value, decimal.Decimal):
+                        result[key] = float(value)
+
+        redis_client.setex(cache_key, 3600, json.dumps(search_results).encode('utf-8'))
+        current_app.logger.info(f"Cached search results for {cache_key}")
+        return jsonify(search_results), 200
     except Exception as e:
         current_app.logger.error(f'Error during search: {e}')
         return jsonify({"message": "An error occurred while searching for hobbies", "error": str(e)}), 500
 
-def process_search_results(result):
-    # Implement the logic to process and convert SQL results into a structured JSON format.
-    # This placeholder function needs to be replaced with actual logic.
-    return [{"placeholder": "Implement logic to structure SQL results into JSON"}]
 
-@hobby_bp.route('', methods=['GET'])
+@hobby_bp.route('/category', methods=['GET'])
 def get_hobbies_by_category():
     category = request.args.get('category')
     cache_key = f"hobbies_by_category:{category}"
@@ -71,34 +87,6 @@ def get_hobbies_by_category():
             return jsonify({"message": "Invalid or missing category"}), 400
     except Exception as e:
         current_app.logger.error(f'Error fetching hobbies for category "{category}": {e}')
-        return jsonify({"message": "An error occurred"}), 500
-    
-@hobby_bp.route('/categories', methods=['GET'])
-def get_hobby_categories():
-    try:
-        categories = ["Arts", "Sports", "Other"]
-        return jsonify(categories), 200
-    except Exception as e:
-        current_app.logger.error(f'Failed to fetch hobby categories: {e}')
-        return jsonify({"message": "An error occurred while fetching the hobby categories"}), 500
-
-@hobby_bp.route('/categories/<category>/hobbies', methods=['GET'])
-def get_hobbies_by_general_category(category):
-    cache_key = f"general_category_hobbies:{category}"
-    try:
-        if category in ["Arts", "Sports", "Other"]:
-            cached_hobbies = redis_client.get(cache_key)
-            if cached_hobbies:
-                return jsonify(json.loads(cached_hobbies)), 200
-
-            hobbies = Hobby.query.filter_by(category=category).all()
-            serialized_hobbies = hobbies_schema.dump(hobbies)
-            redis_client.setex(cache_key, 3600, json.dumps(serialized_hobbies))  # Cache for 1 hour
-            return jsonify(serialized_hobbies), 200
-        else:
-            return jsonify({"message": "Invalid category"}), 400
-    except Exception as e:
-        current_app.logger.error(f'Error fetching hobbies for general category "{category}": {e}')
         return jsonify({"message": "An error occurred"}), 500
 
 @hobby_bp.route('/<int:hobby_id>', methods=['GET'])
@@ -121,14 +109,19 @@ def get_hobby_locations(hobby_id):
     try:
         cached_locations = redis_client.get(cache_key)
         if cached_locations:
-            return jsonify(json.loads(cached_locations)), 200
+            return jsonify(json.loads(cached_locations.decode('utf-8'))), 200
 
-        locations = Location.query.filter_by(hobby_id=hobby_id).all()
-        if not locations:
+        # Query the HobbyLocation table to find related locations for the given hobby_id
+        hobby_location_links = HobbyLocation.query.filter_by(hobby_id=hobby_id).all()
+        if not hobby_location_links:
             return jsonify({"message": "No locations found for the specified hobby"}), 404
         
-        serialized_locations = location_schema.dump(locations)
-        redis_client.setex(cache_key, 3600, json.dumps(serialized_locations))  # Cache for 1 hour
+        location_ids = [link.location_id for link in hobby_location_links]
+        
+        locations = Location.query.filter(Location.location_id.in_(location_ids)).all()
+
+        serialized_locations = location_schema.dump(locations, many=True)
+        redis_client.setex(cache_key, 3600, json.dumps(serialized_locations).encode('utf-8'))  # Cache for 1 hour
         return jsonify(serialized_locations), 200
     except Exception as e:
         current_app.logger.error(f'Error fetching locations for hobby_id {hobby_id}: {e}')

@@ -20,23 +20,20 @@ class Hobby(db.Model):
 class Location(db.Model):
     __tablename__ = 'locations'
     location_id = db.Column(db.Integer, primary_key=True)
-    hobby_id = db.Column(db.Integer, db.ForeignKey('hobbies.hobby_id'), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     address = db.Column(db.String(255))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     cost = db.Column(db.String(255))
     popularity = db.Column(db.Integer)
-    website = db.Column(db.String(255))
+    booking_url = db.Column(db.String(255))
+
 
 class HobbyLocation(db.Model):
     __tablename__ = 'hobby_location'
-    id = db.Column(db.Integer, primary_key=True)
+    hobby_location_id = db.Column(db.Integer, primary_key=True)  # Adjusted column name
     hobby_id = db.Column(db.Integer, db.ForeignKey('hobbies.hobby_id'), nullable=False)
     location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
-    hobby = db.relationship('Hobby', backref=db.backref('hobby_locations', lazy=True))
-    location = db.relationship('Location', backref=db.backref('hobby_locations', lazy=True))
-
 
 class Roadmap(db.Model):
     __tablename__ = 'roadmaps'
