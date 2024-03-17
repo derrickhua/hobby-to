@@ -8,11 +8,11 @@
 
 <nav class={cn("flex items-center justify-between w-full h-[120px]", className)}>
     <div class="flex items-center space-x-4 ">
-        <a href="/" class="text-lg logo">
-            HOBBY.TO
-        </a>
-        <a href="/link1" class="text-sm font-medium transition-colors hover:text-primary nav-links">ROADMAPS</a>
-        <a href="/link2" class="text-sm font-medium transition-colors hover:text-primary nav-links">RECOMMEND</a>
+        <div class="flex justify-center items-center h-full w-full">
+            <a href="/" class="text-lg logo w-full text-center">HOBBY.TO</a>
+        </div>
+        <a href="/link1" class="text-sm font-medium transition-colors nav-links">ROADMAPS</a>
+        <a href="/link2" class="text-sm font-medium transition-colors nav-links">RECOMMEND</a>
     </div>
 
     <DropdownMenu.Root>

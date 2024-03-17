@@ -114,11 +114,80 @@ body {
 .logo {
   font-family: 'Megrim';
   font-size: 36px;
-  padding-right: 35px;
+  padding: 0 35px;
 }
 
-.nav-links{
+.nav-links {
   font-family: 'Megrim';
   font-size: 18px;
   padding: 0 25px;
+
+}
+
+.nav-links:hover, .logo:hover {
+  color: #FEBE98;
+}
+
+.typewriter {
+  font-family: 'Nixie One';
+  font-size: 40px;
+}
+
+.categories{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px;
+  max-width: 410px;
+}
+
+.category-btns, .cost-btns{
+  width: 90px;
+  height: 90px;
+  padding: 10px;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-family: 'Megrim';
+  background-image: linear-gradient(#FEBE98 0 0);
+  background-size: 200% .08em;
+  background-position: 200% 100%;
+  background-repeat: no-repeat;
+  transition: background-size .3s, background-position .3s .3s;
+}
+
+.category-btns:hover, .cost-btns:hover {
+  transition: background-size .3s .3s, background-position .3s;
+  background-size: 200% 100%;
+  background-position: 100% 100%;
+}
+.cost-btns {
+  font-family: 'Fascinate Inline';
+  font-size: 36px;
+  width: 70px;
+  height: 70px;
+  border: 1px solid black;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.costs{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 30px;
+  max-width: 410px;
+}
+
+.search {
+  max-width: 450px;
+}
+
+.searchbar {
+  max-width: 450px;
+  height: 50px;
+  border-radius: 10px;
 }

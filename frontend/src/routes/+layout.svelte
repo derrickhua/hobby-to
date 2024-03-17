@@ -5,7 +5,7 @@
     
     <div class="h-screen w-full grid grid-rows-[auto,1fr] px-[80px]">
         <Nav />
-        <div class="overflow-auto">
+        <div class="overflow-auto flex justify-center" style="">
             <slot></slot> 
         </div>
     </div>
