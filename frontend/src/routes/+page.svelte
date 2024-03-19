@@ -1,16 +1,30 @@
 <script lang="ts">
     import { concurrent } from 'svelte-typewriter';
-    
+    import { onMount } from 'svelte';
+    import { writable } from 'svelte/store';
+    import LeafletMap from '$lib/components/ui/map/map.svelte';
+    import { searchHobbies } from '$lib/util/hobbies';
+    let locations = writable([]);
+
+    onMount(async () => {
+        try {
+            const result = await searchHobbies({ query: '', cost: [], category: null });
+            console.log(result)
+            locations.set(result);
+        } catch (error) {
+            console.error(error);
+        }
+    });
 </script>
 <div class="h-full w-full flex flex-col py-16" style="max-width: 1500px;">
     <!-- Title Area -->
-    <div class="h-[15%] flex justify-center items-center">
+    <div class="h-[10%] flex justify-center items-center">
         <p use:concurrent={{ interval: 60 }} class="typewriter font-bold">
             FIND YOUR NEXT PASSION
         </p>
     </div>
 
-    <div class="h-[15%] p-5 flex flex-row items-center justify-center">
+    <div class="h-[17%] p-5 flex flex-row items-center justify-center">
         <div class="flex w-1/3 categories">
             <button class="category-btns">
                 <img src="/paint-brush.png" alt="paintbrush illustration" style="width: 35px; height: 35px;">
@@ -22,7 +36,7 @@
             </button>
             <button class="category-btns">
                 <img src="/other.png" alt='square illustration' style="width: 35px; height: 35px;"/>
-                <p>OTHER</p>
+                <p>OTHERS</p>
             </button>
         </div>
 
@@ -42,8 +56,6 @@
     <!-- Map Area -->
     <div class="flex-1">
         <!-- Leaflet map container -->
-        <div id="map" class="h-full w-full">
-            <!-- Map will be initialized here -->
-        </div>
+        <LeafletMap {locations} />
     </div>
 </div>

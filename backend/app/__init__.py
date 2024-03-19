@@ -10,6 +10,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 from flask_jwt_extended import JWTManager
 from .database import db
 from .redis_client import redis_client
+from flask_cors import CORS
 
 def configure_logging(app):
     # Configure basic logging to stdout
@@ -22,7 +23,6 @@ def configure_logging(app):
     file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s'))
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
-    
     app.logger.setLevel(logging.INFO)
     app.logger.info('Flask application startup')
 
@@ -46,7 +46,9 @@ def create_app():
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET')  # Change this to a random secret key
 
     jwt = JWTManager(app)
-
+    
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+    
     # Initialize extensions
     db.init_app(app)
 

@@ -16,9 +16,10 @@ location_schema = LocationSchema(many=True)
 
 @hobby_bp.route('/search', methods=['GET'])
 def search_hobbies():
-    query_param = request.args.get('query', '')
-    cost = request.args.getlist('cost')  # This will be a list like ['$','$$','$$$']
+    query_param = request.args.get('query', None)  # Use None as the default value to easily check for absence
+    cost = request.args.getlist('cost')  # This remains a list and could be empty
     category = request.args.get('category', None)
+
     cache_key = f"search:{query_param}:{category}:{':'.join(cost)}"
 
     try:
@@ -27,39 +28,40 @@ def search_hobbies():
             current_app.logger.info(f"Returning cached results for {cache_key}")
             return jsonify(json.loads(cached_data.decode('utf-8'))), 200
 
-        # Start with the basic part of the query
         sql_query = """
-            SELECT l.location_id, l.name, l.address, l.latitude, l.longitude, l.cost, l.popularity, l.booking_url FROM hobbies h
-            JOIN hobby_location hl ON h.hobby_id = hl.hobby_id
-            JOIN locations l ON hl.location_id = l.location_id
-            WHERE (h.name ILIKE :query_param OR h.sub_category ILIKE :query_param OR :query_param IS NULL)
-            AND (h.category = :category OR :category IS NULL)
+            SELECT l.location_id, l.name, l.address, l.latitude, l.longitude, l.cost, l.popularity, l.booking_url
+            FROM locations l
+            LEFT JOIN hobby_location hl ON l.location_id = hl.location_id
+            LEFT JOIN hobbies h ON hl.hobby_id = h.hobby_id
         """
+        
+        where_clauses = []
+        params = {}
 
-        # Dynamically build the cost condition if there are cost filters
-        if cost:
-            cost_conditions = " OR ".join([f"l.cost = '{c}'" for c in cost])
-            sql_query += f" AND ({cost_conditions})"
+        if query_param:
+            where_clauses.append("(h.name ILIKE :query_param OR h.sub_category ILIKE :query_param)")
+            params['query_param'] = f'%{query_param}%'
 
-        sql_query += " ORDER BY GREATEST(similarity(h.name, :query_param), similarity(h.sub_category, :query_param)) DESC;"
+        if category:
+            where_clauses.append("h.category = :category")
+            params['category'] = category
 
-        params = {'query_param': f'%{query_param}%', 'category': category}
+        if cost and any(c for c in cost):  # Check if cost list is not empty and has any non-empty values
+            cost_conditions = " OR ".join([f"l.cost = '{c}'" for c in cost if c])
+            where_clauses.append(f"({cost_conditions})")
 
-        # Execute the query
+        if where_clauses:
+            sql_query += " WHERE " + " AND ".join(where_clauses)
+
+        sql_query += " ORDER BY l.popularity DESC;"
+
         with db.engine.connect() as connection:
             result = connection.execute(text(sql_query), params)
-
-            # Define the column names
-            column_names = ['location_id', 'name', 'address', 'latitude', 'longitude', 'cost', 'popularity', 'booking_url']
-
-            # Convert the row into a dictionary
             search_results = [dict(zip(column_names, row)) for row in result]
 
-            # Convert datetime objects into strings and Decimal objects into floats
-            for result in search_results:
-                for key, value in result.items():
-                    if isinstance(value, decimal.Decimal):
-                        result[key] = float(value)
+        if not search_results:
+            current_app.logger.info("No results found for the query.")
+            return jsonify([]), 200
 
         redis_client.setex(cache_key, 3600, json.dumps(search_results).encode('utf-8'))
         current_app.logger.info(f"Cached search results for {cache_key}")
@@ -67,7 +69,6 @@ def search_hobbies():
     except Exception as e:
         current_app.logger.error(f'Error during search: {e}')
         return jsonify({"message": "An error occurred while searching for hobbies", "error": str(e)}), 500
-
 
 @hobby_bp.route('/category', methods=['GET'])
 def get_hobbies_by_category():
