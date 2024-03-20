@@ -1,24 +1,24 @@
 from flask import Blueprint, request, jsonify, current_app
-from marshmallow import ValidationError
 from redis import Redis
 from ..database import db
 from sqlalchemy import text
 import json
-from ..models import Hobby, Location, HobbyLocation  # Import HobbyLocation if it's a new model
+from ..models import Hobby, Location, HobbyLocation  
 from ..schemas import HobbySchema, LocationSchema
 from ..redis_client import redis_client
-import decimal
+
 # Define Variables
 hobby_bp = Blueprint('hobby_bp', __name__)  
 hobby_schema = HobbySchema()
 hobbies_schema = HobbySchema(many=True)  
 location_schema = LocationSchema(many=True)
 
-@hobby_bp.route('/search', methods=['GET'])
+@hobby_bp.route('/search', methods=['POST'])
 def search_hobbies():
-    query_param = request.args.get('query', None)  # Use None as the default value to easily check for absence
-    cost = request.args.getlist('cost')  # This remains a list and could be empty
-    category = request.args.get('category', None)
+    data = request.get_json()
+    query_param = data.get('query', None)
+    cost = data.get('cost', [])
+    category = data.get('category', None)
 
     cache_key = f"search:{query_param}:{category}:{':'.join(cost)}"
 
@@ -34,7 +34,7 @@ def search_hobbies():
             LEFT JOIN hobby_location hl ON l.location_id = hl.location_id
             LEFT JOIN hobbies h ON hl.hobby_id = h.hobby_id
         """
-        
+
         where_clauses = []
         params = {}
 
@@ -46,9 +46,11 @@ def search_hobbies():
             where_clauses.append("h.category = :category")
             params['category'] = category
 
-        if cost and any(c for c in cost):  # Check if cost list is not empty and has any non-empty values
-            cost_conditions = " OR ".join([f"l.cost = '{c}'" for c in cost if c])
-            where_clauses.append(f"({cost_conditions})")
+        if cost:
+            where_clauses.append("l.cost IN :cost")
+            params['cost'] = tuple(cost)
+        elif not cost:  # If cost is empty, ensure no results are returned
+            where_clauses.append("1 = 0")  # This will always be false, ensuring no results are returned
 
         if where_clauses:
             sql_query += " WHERE " + " AND ".join(where_clauses)
@@ -57,7 +59,7 @@ def search_hobbies():
 
         with db.engine.connect() as connection:
             result = connection.execute(text(sql_query), params)
-            search_results = [dict(zip(column_names, row)) for row in result]
+            search_results = location_schema.dump(result.fetchall(), many=True)
 
         if not search_results:
             current_app.logger.info("No results found for the query.")
@@ -66,6 +68,7 @@ def search_hobbies():
         redis_client.setex(cache_key, 3600, json.dumps(search_results).encode('utf-8'))
         current_app.logger.info(f"Cached search results for {cache_key}")
         return jsonify(search_results), 200
+
     except Exception as e:
         current_app.logger.error(f'Error during search: {e}')
         return jsonify({"message": "An error occurred while searching for hobbies", "error": str(e)}), 500

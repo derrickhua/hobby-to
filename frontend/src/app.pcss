@@ -159,6 +159,13 @@ body {
   transition: background-size .3s, background-position .3s .3s;
 }
 
+.category-btns {
+  border-radius: 15px;
+}
+.category-btns.selected {
+    background-size: 200% 100%;
+    background-position: 100% 0;
+}
 .category-btns:hover, .cost-btns:hover {
   transition: background-size .3s .3s, background-position .3s;
   background-size: 200% 100%;
@@ -195,4 +202,9 @@ body {
 #map {
     height: 100%;
     width: 100%;
+}
+
+
+.cost-btns.selected {
+    background-color: #FEBE98; /* different color for cost selection */
 }
