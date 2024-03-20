@@ -143,7 +143,6 @@ migrations/versions/*.py
 
 # Docker related
 .dockerignore
-Dockerfile
 *.dockerfile
 docker-compose*.yml
 
