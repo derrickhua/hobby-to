@@ -88,6 +88,7 @@ body {
     padding: 0;
     width: 100vw;
     text-align: center;
+    background-color: #F7EEDD;
 }
 
 @font-face {
@@ -125,12 +126,16 @@ body {
 }
 
 .nav-links:hover, .logo:hover {
-  color: #FEBE98;
+  color: #ACE2E1;
 }
 
 .typewriter {
   font-family: 'Nixie One';
   font-size: 40px;
+}
+
+.typewriter:hover {
+  color: #F6995C;
 }
 
 .categories{
@@ -152,7 +157,7 @@ body {
   align-items: center;
   font-size: 24px;
   font-family: 'Megrim';
-  background-image: linear-gradient(#FEBE98 0 0);
+  background-image: linear-gradient(#ACE2E1 0 0);
   background-size: 200% .08em;
   background-position: 200% 100%;
   background-repeat: no-repeat;
@@ -206,5 +211,61 @@ body {
 
 
 .cost-btns.selected {
-    background-color: #FEBE98; /* different color for cost selection */
+    background-color: #ACE2E1; /* different color for cost selection */
 }
+
+.pop-up-title {
+  font-family: 'Nixie One';
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+  margin-right: 5px;
+}
+
+.pop-up-btn {
+  padding: 5px 10px; 
+  background-color: white; 
+  color: #ACE2E1; 
+  text-decoration: none; 
+  border-radius: 5px;
+  border: 1px solid #ACE2E1;
+  font-size: 18px; 
+}
+
+.pop-up-btn:hover{
+  background-color: #F6995C;
+  color: white;
+  border: 1px solid white;
+}
+
+.pop-up-cost {
+  font-family: 'Fascinate Inline';
+  font-size: 45px; 
+  text-align: center;
+  color: #F6995C; 
+}
+
+.pop-up-icons {
+  display: flex;
+  justify-content: space-evenly; 
+  gap: 15px;
+}
+
+.pop-up-icons > * {
+  flex-grow: 1;
+  text-align: center; 
+}
+
+.pop-up-icons > *:hover{
+  color: #ACE2E1;
+  cursor: pointer;
+}
+
+.pop-up-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #F6995C; 
+    font-size: 25px;
+}
+

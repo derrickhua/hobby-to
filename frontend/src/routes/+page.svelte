@@ -4,7 +4,6 @@
     import { writable } from 'svelte/store';
     import LeafletMap from '$lib/components/ui/map/map.svelte';
     import { searchHobbies } from '$lib/util/hobbies';
-
     let query = '';
     let selectedCategory = '';
     let selectedCosts = writable(["$", "$$", "$$$"]); // All costs are selected by default
@@ -13,7 +12,7 @@
     async function fetchHobbies() {
         try {
             const result = await searchHobbies({ query, cost: $selectedCosts, category: selectedCategory });
-            console.log(result);
+            // console.log(result);
             locations.set(result);
         } catch (error) {
             console.error(error);
@@ -78,6 +77,6 @@
     </div>
 
     <div class="flex-1">
-        <LeafletMap {locations} />
+        <LeafletMap locations={$locations} />
     </div>
 </div>

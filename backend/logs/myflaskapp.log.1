@@ -1,146 +1,135 @@
-2024-03-18 16:08:23,168 INFO: Flask application startup
-2024-03-18 16:11:59,576 INFO: Flask application startup
-2024-03-18 16:19:58,980 INFO: Flask application startup
-2024-03-18 16:25:56,080 INFO: Flask application startup
-2024-03-18 17:11:00,468 INFO: Flask application startup
-2024-03-18 17:16:35,929 INFO: Flask application startup
-2024-03-18 19:47:44,394 INFO: Cached search results for search:::
-2024-03-18 19:47:55,257 INFO: Returning cached results for search:::
-2024-03-18 19:48:53,069 INFO: Returning cached results for search:::
-2024-03-18 19:49:08,288 INFO: Returning cached results for search:::
-2024-03-18 19:49:13,037 INFO: Returning cached results for search:::
-2024-03-18 19:54:21,960 INFO: Flask application startup
-2024-03-18 19:55:03,336 INFO: Cached search results for search:::
-2024-03-18 19:56:28,489 INFO: Returning cached results for search:::
-2024-03-18 19:56:42,946 INFO: Returning cached results for search:::
-2024-03-18 19:58:54,139 INFO: Returning cached results for search:::
-2024-03-18 19:59:33,837 INFO: Returning cached results for search:::
-2024-03-18 19:59:37,340 INFO: Returning cached results for search:::
-2024-03-18 19:59:54,095 INFO: Returning cached results for search:::
-2024-03-18 20:00:58,457 INFO: Flask application startup
-2024-03-18 20:01:18,033 ERROR: Error during search: name 'cache_key' is not defined
-2024-03-18 20:01:37,644 ERROR: Error during search: name 'cache_key' is not defined
-2024-03-18 20:19:45,801 INFO: Flask application startup
-2024-03-18 20:23:30,120 INFO: Flask application startup
-2024-03-18 20:26:04,188 INFO: Cached search results for search:::
-2024-03-18 20:29:18,766 INFO: Flask application startup
-2024-03-18 20:47:18,508 INFO: Flask application startup
-2024-03-18 20:48:34,337 INFO: Cached search results for search:Tennis:None:
-2024-03-18 20:48:40,056 INFO: Cached search results for search::None:
-2024-03-18 20:48:46,149 INFO: Cached search results for search:::
-2024-03-18 20:48:48,494 INFO: Returning cached results for search:::
-2024-03-18 20:48:49,633 INFO: Returning cached results for search:::
-2024-03-18 20:48:50,767 INFO: Returning cached results for search:::
-2024-03-18 20:48:55,613 INFO: Returning cached results for search::None:
-2024-03-18 20:49:04,056 INFO: Returning cached results for search:::
-2024-03-18 20:52:27,776 INFO: Flask application startup
-2024-03-18 20:53:45,560 INFO: Cached search results for search:::
-2024-03-18 20:53:48,168 INFO: Returning cached results for search:::
-2024-03-18 20:54:12,465 INFO: Cached search results for search::None:
-2024-03-18 23:35:57,721 INFO: Flask application startup
-2024-03-18 23:39:41,183 ERROR: Error during search: name 'column_names' is not defined
-2024-03-19 16:09:49,708 INFO: Flask application startup
-2024-03-19 16:10:08,845 ERROR: Error during search: name 'column_names' is not defined
-2024-03-19 16:12:30,543 INFO: Flask application startup
-2024-03-19 16:12:39,778 ERROR: Error during search: Object of type Decimal is not JSON serializable
-2024-03-19 16:28:16,587 INFO: Flask application startup
-2024-03-19 16:28:21,191 ERROR: Error during search: (psycopg2.errors.SyntaxError) syntax error at or near "to"
-LINE 2:             SELECT l.*  # Changed to select all columns from...
-                                          ^
-
-[SQL: 
-            SELECT l.*  # Changed to select all columns from locations for easier schema dumping
-            FROM locations l
-            LEFT JOIN hobby_location hl ON l.location_id = hl.location_id
-            LEFT JOIN hobbies h ON hl.hobby_id = h.hobby_id
-         ORDER BY l.popularity DESC;]
-(Background on this error at: https://sqlalche.me/e/20/f405)
-2024-03-19 16:29:42,147 INFO: Flask application startup
-2024-03-19 16:29:51,363 INFO: Cached search results for search:::
-2024-03-19 16:30:06,127 INFO: Cached search results for search:Tennis::
-2024-03-19 16:30:34,104 INFO: Cached search results for search:Tennis::$
-2024-03-19 16:30:49,759 INFO: Cached search results for search:Tennis::$$
-2024-03-19 16:31:23,688 INFO: No results found for the query.
-2024-03-19 16:31:25,660 INFO: No results found for the query.
-2024-03-19 16:33:12,023 INFO: Returning cached results for search:Tennis::
-2024-03-19 16:39:59,595 INFO: Flask application startup
-2024-03-19 16:40:08,333 INFO: No results found for the query.
-2024-03-19 16:40:09,804 INFO: No results found for the query.
-2024-03-19 16:40:10,438 INFO: No results found for the query.
-2024-03-19 16:40:11,274 INFO: No results found for the query.
-2024-03-19 16:40:21,336 INFO: No results found for the query.
-2024-03-19 16:43:21,407 INFO: Flask application startup
-2024-03-19 16:44:17,122 ERROR: Error during search: Object of type Decimal is not JSON serializable
-2024-03-19 16:46:30,276 INFO: Flask application startup
-2024-03-19 16:46:47,732 INFO: Cached search results for search:Tennis:Sports:$:$$
-2024-03-19 16:46:59,473 INFO: Returning cached results for search:Tennis:Sports:$:$$
-2024-03-19 16:47:20,149 INFO: Cached search results for search:Tennis:Sports:$:$$:$$$
-2024-03-19 16:47:35,998 INFO: Cached search results for search:Tennis:Sports:$
-2024-03-19 16:47:44,235 INFO: Returning cached results for search:Tennis:Sports:$
-2024-03-19 16:56:42,105 INFO: No results found for the query.
-2024-03-19 16:56:43,578 INFO: No results found for the query.
-2024-03-19 16:59:05,501 INFO: Cached search results for search:::$:$$:$$$
-2024-03-19 17:17:03,496 INFO: Cached search results for search::None:
-2024-03-19 17:20:47,907 INFO: Returning cached results for search::None:
-2024-03-19 17:21:03,124 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:21:12,513 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:21:24,870 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:22:32,960 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:22:41,939 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:22:45,072 INFO: No results found for the query.
-2024-03-19 17:26:21,184 INFO: Cached search results for search::None:$:$$:$$$
-2024-03-19 17:26:25,120 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:27:03,519 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:27:27,921 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:27:29,622 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:27:32,678 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:27:35,646 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:27:36,628 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:27:49,004 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:27:55,106 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:27:58,318 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:28:03,383 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:28:42,117 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:28:44,142 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:28:46,204 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:28:59,662 INFO: No results found for the query.
-2024-03-19 17:29:00,830 INFO: No results found for the query.
-2024-03-19 17:30:35,049 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:31:13,601 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:31:51,920 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:31:53,647 INFO: Returning cached results for search::None:$:$$:$$$
-2024-03-19 17:31:57,075 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:32:44,081 INFO: Cached search results for search:Tennis::$:$$:$$$
-2024-03-19 17:39:11,932 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:40:17,713 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:40:20,826 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:40:29,519 INFO: Returning cached results for search:Tennis::$:$$:$$$
-2024-03-19 17:40:39,967 INFO: Cached search results for search:Tennis::$:$$
-2024-03-19 17:40:41,649 INFO: Cached search results for search:Tennis::$
-2024-03-19 17:40:43,370 INFO: Cached search results for search:Tennis::
-2024-03-19 17:40:44,880 INFO: Cached search results for search:Tennis::$$
-2024-03-19 17:48:06,542 INFO: Flask application startup
-2024-03-19 17:48:15,202 INFO: Cached search results for search:::$:$$:$$$
-2024-03-19 17:48:19,912 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:48:22,020 INFO: No results found for the query.
-2024-03-19 17:48:26,531 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:48:31,496 INFO: No results found for the query.
-2024-03-19 17:48:37,206 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:48:38,135 INFO: No results found for the query.
-2024-03-19 17:48:52,720 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:48:55,192 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:48:58,288 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:49:01,246 INFO: No results found for the query.
-2024-03-19 17:49:02,526 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:49:03,164 INFO: No results found for the query.
-2024-03-19 17:49:15,967 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:49:18,138 INFO: No results found for the query.
-2024-03-19 17:49:18,844 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:49:19,046 INFO: No results found for the query.
-2024-03-19 17:49:19,238 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:49:19,881 INFO: No results found for the query.
-2024-03-19 17:49:26,730 INFO: Cached search results for search::Sports:$:$$:$$$
-2024-03-19 17:49:53,568 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:49:56,091 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:49:58,072 INFO: Returning cached results for search:::$:$$:$$$
-2024-03-19 17:50:02,700 INFO: Returning cached results for search::Sports:$:$$:$$$
+2024-03-22 17:22:09,007 INFO: Returning cached results for search::Sports:$:$$:$$$
+2024-03-22 17:22:15,653 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 17:22:21,351 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 17:22:30,970 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 17:22:59,977 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 17:23:01,617 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 17:23:35,006 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 17:24:05,818 INFO: Returning cached results for search:::$:$$
+2024-03-22 17:24:07,579 INFO: Returning cached results for search::Sports:$:$$
+2024-03-22 17:25:07,913 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 17:25:11,255 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 17:25:16,897 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 17:27:59,629 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 17:28:00,784 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 17:38:06,850 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 20:46:35,155 INFO: Cached search results for search:::$:$$
+2024-03-22 20:46:36,285 INFO: Cached search results for search:::$
+2024-03-22 20:46:37,742 INFO: No results found for the query.
+2024-03-22 20:46:39,350 INFO: Returning cached results for search:::$
+2024-03-22 20:46:52,429 INFO: Cached search results for search::Sports:$
+2024-03-22 20:46:55,495 INFO: No results found for the query.
+2024-03-22 20:46:57,375 INFO: Cached search results for search::Arts:$:$$$
+2024-03-22 20:46:57,910 INFO: Cached search results for search::Arts:$:$$$:$$
+2024-03-22 20:47:16,288 INFO: Cached search results for search:::$:$$$:$$
+2024-03-22 20:47:17,235 INFO: No results found for the query.
+2024-03-22 20:47:19,018 INFO: Returning cached results for search:::$:$$$:$$
+2024-03-22 20:47:19,998 INFO: Cached search results for search::Sports:$:$$$:$$
+2024-03-22 20:47:22,516 INFO: Cached search results for search::Sports:$$$:$$
+2024-03-22 20:47:22,934 INFO: Cached search results for search::Sports:$$$
+2024-03-22 20:47:31,274 INFO: No results found for the query.
+2024-03-22 20:47:34,885 INFO: No results found for the query.
+2024-03-22 20:47:35,986 INFO: No results found for the query.
+2024-03-22 20:47:36,853 INFO: Cached search results for search::Sports:$$
+2024-03-22 20:48:05,911 INFO: Cached search results for search::Sports:$$:$
+2024-03-22 20:48:06,682 INFO: Cached search results for search::Sports:$$:$:$$$
+2024-03-22 20:48:51,989 INFO: Cached search results for search::Sports:$$:$$$
+2024-03-22 20:48:53,445 INFO: Cached search results for search::Sports:$$:$$$:$
+2024-03-22 20:48:58,702 INFO: Cached search results for search:::$:$$:$$$
+2024-03-22 20:49:02,783 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 20:49:13,492 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:16:33,705 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:23:41,379 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:23:48,201 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:23:52,253 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:23:59,691 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:24:05,208 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:24:13,913 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:24:18,887 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:24:33,343 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:24:40,229 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:24:45,810 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:24:52,420 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:24:59,371 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:25:18,623 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:25:24,832 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:26:29,272 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:26:41,593 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:26:47,329 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:27:03,523 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:27:10,061 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:27:21,667 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:27:22,765 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:27:29,727 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:27:34,838 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:27:43,926 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:27:50,898 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:28:04,114 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:28:23,680 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:28:36,285 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:28:51,241 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:28:55,617 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:29:09,923 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:29:18,215 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:29:45,026 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:30:07,353 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:30:09,463 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:30:11,899 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:30:13,853 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:30:38,015 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:30:39,931 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:30:42,275 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:30:58,216 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:31:15,317 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:31:24,961 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:31:35,277 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:31:39,216 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:31:40,700 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:31:48,205 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:31:52,367 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:32:11,170 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:32:17,493 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:32:21,640 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:32:32,986 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:32:48,552 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:32:50,083 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:32:53,205 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:33:41,282 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:33:49,499 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:33:50,550 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:33:51,685 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:33:55,632 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:34:14,579 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:34:49,393 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:34:55,963 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:35:02,794 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:37:52,975 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 21:37:59,183 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:13:42,096 INFO: Flask application startup
+2024-03-22 22:15:41,073 INFO: Cached search results for search:::$:$$:$$$
+2024-03-22 22:36:18,038 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:36:36,563 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:36:41,683 INFO: Cached search results for search:::$:$$$
+2024-03-22 22:36:42,070 INFO: Cached search results for search:::$$$
+2024-03-22 22:37:31,992 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:37:45,145 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:39:26,844 INFO: Returning cached results for search:::$:$$$
+2024-03-22 22:39:27,386 INFO: Returning cached results for search:::$$$
+2024-03-22 22:39:53,711 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:42:07,246 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:43:49,498 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:43:54,756 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:44:14,780 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:47:51,043 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:48:37,495 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:49:50,339 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:51:10,108 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:51:16,424 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:51:25,640 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:51:47,099 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:51:50,373 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:52:05,793 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:52:12,675 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:52:40,012 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:52:45,110 INFO: Returning cached results for search:::$:$$:$$$
+2024-03-22 22:52:46,811 INFO: Returning cached results for search:::$:$$:$$$
