@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, make_response
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from ..database import db
@@ -6,12 +6,14 @@ from marshmallow import ValidationError
 from ..models import User, Hobby, UserHobbies, UserRoadmapProgress, Favorite
 from ..schemas import UserSchema, UserHobbySchema, UserRoadmapProgressSchema, FavoriteSchema
 from sqlalchemy.exc import SQLAlchemyError
+from ..limiter import limiter
 
 user_bp = Blueprint('user_bp', __name__)
 users_bp = Blueprint('users_bp', __name__)
 user_roadmap_progress_schema = UserRoadmapProgressSchema(many=True)
 
 @users_bp.route('/api/users/register', methods=['POST'])
+@limiter.limit("10 per hour")
 def register_user():
     user_schema = UserSchema()
     data = request.get_json()
@@ -19,7 +21,7 @@ def register_user():
     if errors:
         current_app.logger.warning('Validation errors in registration attempt')
         return jsonify(errors), 400
-    
+
     email = data.get('email')
     username = data.get('username')
     password = data.get('password')
@@ -34,14 +36,14 @@ def register_user():
         db.session.add(new_user)
         db.session.commit()
         current_app.logger.info(f"User registered: {email}")
-        # You can serialize the user data to return it, excluding sensitive information like the password
-        return jsonify({'message': 'User registered successfully', 'user': user_schema.dump(new_user)}), 201
+        return jsonify({'message': 'User registered successfully', 'user': user_schema.dump(new_user, exclude=['password_hash'])}), 201
     except SQLAlchemyError as e:
         db.session.rollback()
         current_app.logger.error(f"Failed to register user: {e}")
         return jsonify({'message': 'Failed to register user'}), 500
 
-@users_bp.route('/api/users/login', methods=['POST'])
+@users_bp.route('/login', methods=['POST'])
+@limiter.limit("5 per minute")
 def login_user():
     data = request.get_json()
     email = data.get('email')
@@ -60,11 +62,20 @@ def login_user():
     if check_password_hash(user.password_hash, password):
         access_token = create_access_token(identity=user.user_id)
         current_app.logger.info(f"User logged in: {email}")
-        return jsonify(access_token=access_token), 200
+        
+        response = make_response(jsonify({"message": "Login successful"}), 200)
+        response.set_cookie('access_token', access_token, httponly=True, secure=True, samesite='Lax')
+        return response
     else:
-        current_app.logger.warning('Invalid login attempt for email: {email}')
+        current_app.logger.warning(f'Invalid login attempt for email: {email}')
         return jsonify({"message": "Invalid email or password"}), 401
-    
+
+@users_bp.route('/logout', methods=['POST'])
+def logout_user():
+    response = make_response(jsonify({"message": "Logged out successfully"}), 200)
+    response.set_cookie('access_token', '', httponly=True, expires=0)  
+    return response
+
 @users_bp.route('/api/users/<int:user_id>/dashboard', methods=['GET'])
 @jwt_required()
 def user_dashboard(user_id):

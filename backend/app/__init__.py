@@ -11,6 +11,10 @@ from flask_jwt_extended import JWTManager
 from .database import db
 from .redis_client import redis_client
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from .limiter import limiter
+
 
 def configure_logging(app):
     # Configure basic logging to stdout
@@ -30,7 +34,9 @@ def create_app():
     """Factory pattern to create a Flask app instance"""
     app = Flask(__name__)
 
-    # Database configuration
+    
+    # Database 
+    # configuration
     DATABASE_URI = os.getenv('DATABASE_URI')
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -43,7 +49,7 @@ def create_app():
     app.config['SESSION_REDIS'] = redis.from_url(app.config['REDIS_URL'])
 
     #JWT Configurations
-    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET')  # Change this to a random secret key
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET') 
 
     jwt = JWTManager(app)
     
@@ -52,6 +58,9 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
 
+    # Initialize the limiter with the app
+    limiter.init_app(app)
+    
     # Initialize Flask-Session
     Session(app)
 

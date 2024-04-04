@@ -7,36 +7,14 @@ import re
 base_url = 'https://www.toronto.ca'
 
 # The initial page URL that lists the community centres
-initial_url = 'https://www.toronto.ca/data/parks/prd/sports/dropin/basketball/index.html'
+initial_url = 'https://www.toronto.ca/data/parks/prd/sports/dropin/volleyball/index.html'
 
-# Table Tennis from Toronto.ca
-# def scrape_initial_page(url):
-#     response = requests.get(url)
-#     response.raise_for_status()
-#     soup = BeautifulSoup(response.text, 'html.parser')
-
-#     # This will hold the URLs to scrape in the next step
-#     centre_urls = []
-
-#     listings = soup.find_all('div', class_='pfrListing')
-#     for listing in listings:
-#         if "Table Tennis" in listing.text:
-#             h2_tag = listing.find('h2')
-#             if h2_tag:
-#                 a_tag = h2_tag.find('a', href=True)
-#                 if a_tag:
-#                     # Resolve the relative URL to an absolute URL
-#                     absolute_url = urljoin(base_url, a_tag['href'])
-#                     centre_urls.append(absolute_url)
-    
-#     return centre_urls
-#  Basketball
 def scrape_initial_page(url):
     response = requests.get(url)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    # This will hold the URLs and names of centers with adult basketball programs
+    # This will hold the URLs and names of centers with volleyball programs for 17 years and older
     centre_details = []
 
     listings = soup.find_all('div', class_='pfrListing')
@@ -44,9 +22,9 @@ def scrape_initial_page(url):
         program_rows = listing.find_all('tr', attrs={'data-courseid': True})
         for row in program_rows:
             program_div = row.find('div', class_='coursenamemobiletable')
-            if program_div and 'Basketball' in program_div.text:
+            if program_div and 'Volleyball' in program_div.text:
                 age_text = program_div.text
-                # Check if the program is for adults (18 years and up)
+                # Check if the program is for individuals aged 17 years and older
                 if any(age_indicator in age_text for age_indicator in ('17 yrs +', '18 yrs +', '19 yrs +')):
                     h2_tag = listing.find('h2')
                     if h2_tag:
@@ -61,7 +39,7 @@ def scrape_initial_page(url):
                                     'name': centre_name,
                                     'url': absolute_url
                                 })
-                    break  # Move to the next listing after finding an adult basketball program
+                    break  # Move to the next listing after finding a volleyball program for the targeted age group
     
     return centre_details
 
@@ -161,6 +139,29 @@ Wellesley Community Centre
 West Acres Seniors Centre
 York Recreation Centre
 Athletic Centre
+Ancaster Community Centre
+Annette Community Recreation Centre
+Beaches Recreation Centre
+Canoe Landing Community Recreation Centre
+Carmine Stefano Community Centre
+Davisville Junior Public School
+East York Community Centre
+Fairbank Memorial Community Centre
+Hillcrest Community Centre
+Hollycrest Community School
+John Innes Community Recreation Centre
+Joseph J. Piccininni Community Centre
+Mary McCormick Recreation Centre
+North Toronto Memorial Community Centre
+Oriole Community Centre
+Parkdale Community Recreation Centre
+S.H. Armstrong Community Centre
+Seneca Village Community Centre
+St. Lawrence Community Recreation Centre
+The Elms Pool and Community School
+Toronto Pan Am Sports Centre
+Victoria Village Recreation Centre and Arena
+Wallace Emerson Community Centre
 """.split('\n')
 
 def generate_sql_queries_and_filter_names(centre_details, existing_centre_names):
@@ -191,17 +192,17 @@ def generate_sql_queries_and_filter_names(centre_details, existing_centre_names)
             duplicate_centre_names.append(detail['name'])
 
     # Save SQL queries to a file, now excluding duplicates
-    with open('insert_queries_filtered.sql', 'w') as file:
+    with open('toronto_volleyball_insert_queries_filtered.sql', 'w') as file:
         for query in sql_queries:
             file.write(query + "\n")
 
     # Save filtered centre names to a separate file
-    with open('filtered_centre_names.txt', 'w') as file:
+    with open('toronto_volleyball_filtered_centre_names.txt', 'w') as file:
         for name in unique_centre_names:
             file.write(name + "\n")
 
     # Save duplicates to a third file
-    with open('duplicates.txt', 'w') as file:
+    with open('toronto_volleyball_duplicates.txt', 'w') as file:
         for name in duplicate_centre_names:
             file.write(name + "\n")
 
